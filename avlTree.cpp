@@ -51,7 +51,8 @@ class avlTree{
 
     //Rotations
     void rightRotate(){
-        avlTree* middle = 
+
+        avlTree* top =  
     }
 
     void leftRotate(){
