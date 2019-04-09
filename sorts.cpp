@@ -59,67 +59,34 @@ int selectionSort(vector<int> &array){
     return executions;
 }
 
-//Merge Sort
-// void mergeSort(vector<int> &array, int l, int r){
-//     if(l < r){
-//         int m = l+(r-1)/2;
-//         mergeSort(array, l, m); 
-//         mergeSort(array, m+1, r); 
+// Merge Sort
+void merge(vector<int> &a, int low, int mid, int high){
+    vector<int> b;
+    b.resize(a.size());
+    int l1 = low, l2 = mid+1, i;
+    for(i = low; l1 <= mid && l2 <= high; i++){
+        if(a[l1] < a[l2])
+            b[i] = a[l1++];
+        else
+            b[i] = a[l2++];
+    }
+    while(l1 <= mid){
+        b[i++] = a[l1++];
+    }
+    while(l2 <= high)
+        b[i++] = a[l2++];
+    for(int i = low; i <= high; i++)
+        a[i] = b[i];
+}
 
-//         //Merge
-//         int i, j, k; 
-//         int n1 = m - l + 1; 
-//         int n2 =  r - m; 
-    
-//         /* create temp arrays */
-//         vector<int> L, R;
-//         L.resize(n1);
-//         R.resize(n2); 
-    
-//         /* Copy data to temp arrays L[] and R[] */
-//         for (i = 0; i < n1; i++) 
-//             L[i] = array[l + i]; 
-//         for (j = 0; j < n2; j++) 
-//             R[j] = array[m + 1+ j]; 
-    
-//         /* Merge the temp arrays back into arr[l..r]*/
-//         i = 0; // Initial index of first subarray 
-//         j = 0; // Initial index of second subarray 
-//         k = l; // Initial index of merged subarray 
-//         while (i < n1 && j < n2) 
-//         { 
-//             if (L[i] <= R[j]) 
-//             { 
-//                 array[k] = L[i]; 
-//                 i++; 
-//             } 
-//             else
-//             { 
-//                 array[k] = R[j]; 
-//                 j++; 
-//             } 
-//             k++; 
-//         } 
-    
-//         /* Copy the remaining elements of L[], if there 
-//         are any */
-//         while (i < n1) 
-//         { 
-//             array[k] = L[i]; 
-//             i++; 
-//             k++; 
-//         } 
-    
-//         /* Copy the remaining elements of R[], if there 
-//         are any */
-//         while (j < n2) 
-//         { 
-//             array[k] = R[j]; 
-//             j++; 
-//             k++; 
-//         } 
-//     }
-// }
+void mergeSort(vector<int> &a, int low, int high){
+    if(low < high){
+        int mid = (low + high) / 2;
+        mergeSort(a, low, mid);
+        mergeSort(a, mid+1, high);
+        merge(a, low, mid, high);
+    }
+}
 
 
 // void Sort(vector<int> &array){
@@ -128,9 +95,8 @@ int selectionSort(vector<int> &array){
 
 int main(int argc, char* argv[]){
     vector<int> array = {10, 4, 25, 50, 75, 22, 21, 2, 6, 5, 3};
-
-    // mergeSort(array, 0, array.size() - 1);
-    cout << "num of exections(n = " << array.size() << "): " << insertionSort(array) << endl;
+    mergeSort(array, 0, array.size() - 1);
+    // cout << "num of exections(n = " << array.size() << "): " << insertionSort(array) << endl;
     for(int i = 0; i < array.size(); i++)
         cout << array[i] << endl;
     
