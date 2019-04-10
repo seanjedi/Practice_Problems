@@ -125,15 +125,14 @@ class biTree {
 };
 
 int main(int argc, char* argv[]){
-    biTree *head = new biTree(20);
-    head->insert(8);
-    head->insert(22);
+    biTree *head = new biTree(9);
     head->insert(4);
-    head->insert(12);
-    head->insert(25);
-    head->insert(10);
-    head->insert(14);
-    head->printTriangle();
+    head->insert(6);
+    head->insert(20);
+    head->insert(170);
+    head->insert(15);
+    head->insert(1);
+    head->preOrder_print();
     delete head;
     return 0;
 }
