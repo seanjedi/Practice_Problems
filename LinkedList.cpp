@@ -73,36 +73,89 @@ class lList{
     }
 
     int deleteKey(int key);
+    void deleteDups();
+    int kFromLast(int n);
 };
 lList* head = new lList();
 
 int lList::deleteKey(int key){
     lList* cur = this;
-        lList* next = this->getNext();
-        if(cur->getKey() == key){
-            head = next;
-            return 0;
+    lList* next = this->getNext();
+    
+    if(cur->getKey() == key){
+        lList* temp = head;
+        temp->setNext(NULL);
+        delete temp;
+        head = next;
+        return 0;
+    }
+
+    while(next->getKey() != key && next->getNext()){
+        cur = cur->getNext();
+        next = cur->getNext();
+    }
+    if(next->getKey() == key){
+        cur->setNext(next->getNext());
+        next->setNext(NULL);
+        delete next;
+        return 0;
+    }else{
+        return -1;
+    }
+}
+
+void lList::deleteDups(){
+    lList* slow = this;
+    lList* temp;
+    lList* fast = slow ->getNext();
+    while(slow){
+        while(fast){
+            if(slow->getValue() == fast->getValue()){
+                temp = fast;
+                fast = fast->getNext();
+                head->deleteKey(temp->getKey());
+            }else{
+                fast = fast->getNext();
+            }
         }
-        while(next->getKey() != key && next->getNext()){
-            cur = cur->getNext();
-            next = cur->getNext();
-        }
-        if(next->getKey() == key){
-            cur->setNext(next->getNext());
-            return 0;
+        if(slow->getNext())
+            slow = slow->getNext();
+        else break;
+        if(slow->getNext())
+            fast = slow->getNext();
+    }
+}
+
+int lList::kFromLast(int n){
+    lList* cur = head;
+    lList* loc = head;
+    int counter = -n;
+    while(cur){
+        if(counter < 0){
+            counter++;
         }else{
-            return -1;
+            counter = loc->getKey();
+            loc = loc->getNext(); 
         }
+        cur = cur->getNext();
+    }
+    return counter;
 }
 
 int main(int argc, char* argv []){
     head ->insert(1,50);
+    head ->insert(4,50);
+    head ->insert(6,50);
     head->insert(2,10);
     head->insert(3,40);
+    head->insert(6,10);
+    head->insert(7,10);
 
     
-    cout << head->search(3) << endl;
-    cout << head->deleteKey(0) << endl;
-    head->printList();
+    // cout << head->search(3) << endl;
+    cout << head->kFromLast(10) << endl;
+    // head->deleteDups();
+
+    // head->printList();
     return 0;
 }
