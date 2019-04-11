@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <stack>
 #include <vector>
 using namespace std;
 
@@ -118,6 +119,17 @@ void question3(){
     cout << result << endl;
 }
 
+void Reversal(){
+    string message = "Hi my name is Sean";
+    string result;
+
+    for(int i = message.length()-1; i >= 0; i--){
+        result += message[i];
+    }
+    cout << result << endl;
+    
+}
+
 
 
 int main(int argc, char* argv[]){
@@ -125,6 +137,7 @@ int main(int argc, char* argv[]){
     // finder();
     // question1();
     // question2();
-    question3();
+    // question3();
+    // Reversal();
     return 0;
 }

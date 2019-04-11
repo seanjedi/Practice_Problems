@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-
+#include <queue>
 using namespace std;
 
 class biTree {
@@ -122,6 +122,25 @@ class biTree {
         if(cur->getRight())
             cur->getRight()->printLevel(level, curLevel+1);
     }
+
+    //Breadth First Search
+
+    void BFS(){
+        biTree* cur;
+        queue<biTree*> current;
+        current.push(this);
+        while(!current.empty()){
+            cur = current.front();
+            current.pop();
+            cout << cur->getValue() << endl;
+            if(cur->getLeft()){
+                current.push(cur->getLeft());
+            }
+            if(cur->getRight()){
+                current.push(cur->getRight());
+            }       
+        }
+    }
 };
 
 int main(int argc, char* argv[]){
@@ -132,7 +151,7 @@ int main(int argc, char* argv[]){
     head->insert(170);
     head->insert(15);
     head->insert(1);
-    head->preOrder_print();
+    head->BFS();
     delete head;
     return 0;
 }
