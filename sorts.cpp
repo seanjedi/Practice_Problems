@@ -5,6 +5,8 @@ using namespace std;
 
 #define MIN(a,b)((a)<(b)?(a):(b))
 
+#define MAX(a,b)((a)>(b)?(a):(b))
+
 void swap(int &a, int &b){
     int temp = a;
     a = b;
@@ -99,6 +101,5 @@ int main(int argc, char* argv[]){
     // cout << "num of exections(n = " << array.size() << "): " << insertionSort(array) << endl;
     for(int i = 0; i < array.size(); i++)
         cout << array[i] << endl;
-    
     return 0;
 }

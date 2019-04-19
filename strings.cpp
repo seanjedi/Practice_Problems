@@ -48,6 +48,7 @@ void finder(){
     cout << string1 << endl << string2 << endl;
 }
 
+
 int mapNoCollision(char c, vector<char>& table){
     int i = (int)c;
     int loc = i%27;
@@ -127,7 +128,18 @@ void Reversal(){
         result += message[i];
     }
     cout << result << endl;
-    
+}
+
+void ReversalC(){
+    char message[] = "Hi my name is Sean";
+    char* result;
+    result = new char[sizeof(message) + 1];
+    int j = 0;
+    for(int i = sizeof(message) - 2; i >= 0; i--){
+        result[j++] = message[i];
+    }
+    result[j] = '\0';
+    cout << result << endl;
 }
 
 
@@ -138,6 +150,6 @@ int main(int argc, char* argv[]){
     // question1();
     // question2();
     // question3();
-    // Reversal();
+    Reversal();
     return 0;
 }

@@ -97,19 +97,18 @@ class biTree {
      //Print Triangle traversal
     void printTriangle(int left = 0, int right = 0, bool flag = true){
         biTree* cur = this;
-        if((left == 0 || right == 0 || !cur->getLeft() || !cur->getRight()) && flag){
-            cout << cur->getValue() << endl;
+        if((left == 0 || right == 0 || (!cur->getLeft() && !cur->getRight())) && flag){
+            cout<<cur->getValue() << endl;
         }
         if(cur->getLeft()){
             cur->getLeft()->printTriangle(left++, right);
         }
         if(cur->getRight()){
-            right++;
             cur->getRight()->printTriangle(left, right++, false);
         }
-        if((left == 0 || right == 0 || !cur->getLeft() || !cur->getRight()) && !flag)
-            cout << cur->getValue() << endl;
-        
+        if((left == 0 || right == 0 ||  (!cur->getLeft() && !cur->getRight())) && !flag){
+            cout<<cur->getValue() << endl;
+        }
     }
 
      //Level Print
@@ -151,7 +150,7 @@ int main(int argc, char* argv[]){
     head->insert(170);
     head->insert(15);
     head->insert(1);
-    head->BFS();
+    head->printTriangle();
     delete head;
     return 0;
 }
