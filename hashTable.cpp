@@ -16,7 +16,7 @@ class HashTable{
     pair<int, int> empty;
 
     public:
-    HashTable(int initialSize = 1, double load = 0.5){
+    HashTable(double load = 0.5, int initialSize = 1){
         loadFactor = load;
         capacity = 0;
         empty.first = -1;
@@ -38,7 +38,7 @@ class HashTable{
     bool insert(int key, int value){
         //resize the hashtable if needed
         
-        if(capacity > (arrayList.size() * loadFactor)){
+        if(capacity >= (arrayList.size() * loadFactor)){
             reHash();
         }
         int loc = hash(key) % arrayList.size();
@@ -111,7 +111,7 @@ int main(){
     srand(time(NULL));
     random = rand();
     //Create Hashtable and add to it
-    HashTable table;
+    HashTable table(1, 10);
 
     //Testing insertion
     table.insert(1,10);
