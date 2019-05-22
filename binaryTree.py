@@ -16,6 +16,8 @@ class Node:
 
     def getLeft(self):
         return self.__leftNode
+    def setData(self, data = None):
+        self.__data = data
     def getData(self):
         return self.__data
 
@@ -27,12 +29,12 @@ class Node:
 
 class binaryTree:
     "This is my implementation of a binary tree"
-    def __init__(self):
-        self.head = None
+    def __init__(self, data = None):
+        self.head = Node(data)
     
     def insert(self, data):
-        if self.head is None:
-            self.head = Node(data)
+        if self.head.getData() is None:
+            self.head.setData(data)
             return
         else:
             cur = self.head
@@ -120,15 +122,25 @@ class binaryTree:
         if self.head is not None:
             del self.head
 
-Tree = binaryTree()
-Tree.insert(10)
-Tree.insert(5)
-Tree.insert(4)
-Tree.insert(6)
-Tree.insert(15)
-Tree.insert(13)
-Tree.insert(20)
+# Tree = binaryTree()
+# Tree.insert(10)
+# Tree.insert(5)
+# Tree.insert(4)
+# Tree.insert(6)
+# Tree.insert(15)
+# Tree.insert(13)
+# Tree.insert(20)
 
-# print(Tree.search(9))
-Tree.postOrderPrint()
-del Tree
+# # print(Tree.search(9))
+# Tree.postOrderPrint()
+# del Tree
+
+llist = binaryTree(5)
+llist.insert(3)
+llist.insert(2)
+llist.insert(0)
+llist.insert(1)
+llist.insert(6)
+llist.insert(7)
+llist.insert(5)
+llist.inOrderPrint()
