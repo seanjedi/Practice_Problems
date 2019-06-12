@@ -1,4 +1,4 @@
-# content of test_sample.py
+# content of test_lucidyou_website.py
 import pytest
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
@@ -9,17 +9,17 @@ from selenium.webdriver.common.by import By
 import time
 
 browser = webdriver.Firefox()
-users_added = 0
+users_added = []
 subscribed = False
 
 
-############### Setup Module ###############
+###################################################### Setup Module ######################################################
 def setup_module(module):
     browser.maximize_window()
     browser.get("https://lucid-you.firebaseapp.com/")
     browser.implicitly_wait(10)
 
-############### Tear Down Moduel ###############
+###################################################### Tear Down Moduel ######################################################
 def teardown_module(module):
     global users_added, subscribed
     if subscribed == True:
@@ -27,7 +27,7 @@ def teardown_module(module):
         time.sleep(1)
         WebDriverWait(browser, 10).until(EC.visibility_of_element_located((By.ID,"unSubscribeBtn"))).click()
         time.sleep(1)
-    if users_added != 0:
+    if len(users_added) != 0:
         #Get Rid of added users!
         browser.get("https://console.firebase.google.com/u/0/project/lucid-you/authentication/users")
         signin = browser.find_element_by_id("identifierId")
@@ -41,7 +41,7 @@ def teardown_module(module):
         submit = browser.find_element_by_class_name("CwaK9")
         submit.click()
         WebDriverWait(browser, 10).until(EC.visibility_of_element_located((By.ID, "sort-by-created-at"))).click()
-        for i in range(users_added):
+        for i in users_added:
             time.sleep(2)
             element_to_hover_over = browser.find_element_by_xpath("/html/body/div[1]/div/div[1]/div/ng-transclude/div/div/div/div/md-single-grid/md-card/div/table/tbody[2]/tr/td[6]/div/md-menu/button")
             hover = ActionChains(browser).move_to_element(element_to_hover_over)
@@ -55,7 +55,8 @@ def teardown_module(module):
     browser.quit()
 
 
-############### Fixtures ###############
+###################################################### Fixtures ######################################################
+##Login Module
 @pytest.fixture
 def login():
     browser.get("https://lucid-you.firebaseapp.com/login.html")
@@ -64,21 +65,43 @@ def login():
     submit = browser.find_element_by_xpath("/html/body/main/button").click()
     time.sleep(2)
 
+##SignupLink Module
 @pytest.fixture(scope="module")
 def signupPageLink():
     signupLink = browser.find_element_by_id("signup-link")
     signupLink.click()
 
+##AddUser Module
+@pytest.fixture(scope="module")
+def AddUser():
+    global browser, users_added   
+    if len(users_added) == 0:
+        user,password = "test_suite@gmail.com", 12345678
+        browser.get("https://lucid-you.firebaseapp.com/signup.html")
+        time.sleep(1)
+        browser.find_element_by_id("txtEmail").send_keys(user)
+        browser.find_element_by_id("txtPassword").send_keys(password)
+        browser.find_element_by_id("txtPassword2").send_keys(password)
+        browser.find_element_by_id("btnLogin").click()
+        try:
+            WebDriverWait(browser, 5).until(EC.visibility_of_element_located((By.ID,"logout"))).click()
+            users_added.append(user)
+            time.sleep(2)
+        except: 
+            return False
+
+##SignupPage Module
 @pytest.fixture()
 def signupPageSetup():
     browser.refresh()
     browser.implicitly_wait(10)
     userName = browser.find_element_by_id("txtEmail")
-    password = browser.find_element_by_id("txtPassword2")
-    password2 = browser.find_element_by_id("txtPassword")
+    password = browser.find_element_by_id("txtPassword")
+    password2 = browser.find_element_by_id("txtPassword2")
     submit = browser.find_element_by_id("btnLogin")
     return (userName, password, password2, submit)
 
+##Login page setup Module
 @pytest.fixture()
 def loginPageSetup():
     browser.get("https://lucid-you.firebaseapp.com/login.html")
@@ -88,6 +111,7 @@ def loginPageSetup():
     submit = browser.find_element_by_xpath("/html/body/main/button")
     return (userName, password, submit)
 
+##Setup log dreams Module
 @pytest.fixture
 def setup_log_dreams():
     global browser, subscribed
@@ -110,7 +134,7 @@ def setup_log_dreams():
     submit = browser.find_element_by_id("submit")
     return (exp, tags, sound1, sound2, freq1, freq2, amp1, amp2, rating, submit)
 
-############### Test Signup Page! ###############
+###################################################### Test Signup Page! ######################################################
 # @pytest.mark.signup
 @pytest.mark.parametrize('user, pass1, pass2, error, result', [
     ("me", "a", "b", "incorrect_password", "password doesn't match!"),
@@ -144,7 +168,7 @@ def test_signup(user, pass1, pass2, error, result, signupPageLink, signupPageSet
         try:
             WebDriverWait(browser, 2).until(EC.visibility_of_element_located((By.ID, "logged_in"))).text
             WebDriverWait(browser, 5).until(EC.visibility_of_element_located((By.ID,"logout"))).click()
-            users_added += 1
+            users_added.append(user)
             time.sleep(2)
             browser.get("https://lucid-you.firebaseapp.com/signup.html")
             # browser.back()
@@ -152,7 +176,7 @@ def test_signup(user, pass1, pass2, error, result, signupPageLink, signupPageSet
 
 
 
-############### Test Login Page ###############
+###################################################### Test Login Page ######################################################
 # @pytest.mark.login
 @pytest.mark.parametrize('user, password, result, error', [
     ("me", "a", "Wrong Credentials", "wrong"),
@@ -160,7 +184,7 @@ def test_signup(user, pass1, pass2, error, result, signupPageLink, signupPageSet
     ("test_suite@gmail.com", "a", "Credentials", "wrong"),
     ("test_suite@gmail.com", 12345678,"test_suite@gmail.com","logged_in")
     ])
-def test_login(user, password, result, error, loginPageSetup):
+def test_login(user, password, result, error, AddUser, loginPageSetup):
     global browser
     loginPageSetup[0].send_keys(user)
     loginPageSetup[1].send_keys(password)
@@ -182,13 +206,13 @@ def test_login(user, password, result, error, loginPageSetup):
         browser.back()
     except: pass
 
-############### log dreams tests ###############
+###################################################### log dream logs tests ######################################################
 @pytest.mark.parametrize('exp, tags, sound1, sound2, freq1, freq2, amp1, amp2, rating, site', [
     ("Had a great time last night, dreamt of angels", "angels, good sleep", "death metal", "things", "120", "121", "120", "230", "5", "LogDreams"),
     ("Had a great time last night, dreamt of angels", "angels, good sleep", "death metal", "things", "120", "121", "120", "230", "5", "forum"),
     ("Had a great time last night, dreamt of angels", "angels, good sleep", "death metal", "things", "120", "121", "120", "230", "5", "Records")
     ])
-def test_log_dreams(login, exp, tags, sound1, sound2, freq1, freq2, amp1, amp2, rating, site, setup_log_dreams):
+def test_log_dreams(login, exp, tags, sound1, sound2, freq1, freq2, amp1, amp2, rating, site, AddUser, setup_log_dreams):
     global browser, subscribed
     if site in browser.current_url:
         setup_log_dreams[0].send_keys(exp)
