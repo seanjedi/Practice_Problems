@@ -35,7 +35,8 @@ class hashTable:
         self.__curSize = 0
         self.__limit = Limit
         self.table = [None] * Size
-        self.hashValue = int(random.random() * 1000)
+        # self.hashValue = int(random.random() * 1000)
+        self.hashValue = Size
     
 # Hash Function
     def hash(self, key):
@@ -45,6 +46,8 @@ class hashTable:
 #Rehash Function 
     def reHash(self):
         self.__maxSize *= 2
+        if self.__hashValue < self.maxSize:
+            self.__hashValue = self.maxSize
         newTable = hashTable(self.__maxSize)
         for cur in self.table:
             while cur is not None:
